@@ -124,6 +124,9 @@ def get_path(predecessor, start, goal):
     path.append(start)
     path.reverse()
     print(path)
+    # Plot the path nodes
+    for node in path:
+        ax.plot(node[0], node[1], 'ro', alpha=0.3, markersize=1)
     return path
     
 if __name__ == "__main__":
@@ -210,12 +213,12 @@ if __name__ == "__main__":
             # Iteration to display the visited nodes after every 10000 iterations
             iteration += 1
             # Sets the cost to move from one node to another
-            moves = [(step_size*np.cos(np.radians(2*thetas)), step_size*np.sin(np.radians(2*thetas))), 
+            moves = [(step_size*np.cos(np.radians(6*thetas)), step_size*np.sin(np.radians(6*thetas))),(step_size*np.cos(np.radians(5*thetas)), step_size*np.sin(np.radians(5*thetas))),(step_size*np.cos(np.radians(4*thetas)), step_size*np.sin(np.radians(4*thetas))), (step_size*np.cos(np.radians(3*thetas)), step_size*np.sin(np.radians(3*thetas))),(step_size*np.cos(np.radians(2*thetas)), step_size*np.sin(np.radians(2*thetas))), 
                     (step_size*np.cos(np.radians(thetas)), step_size*np.sin(np.radians(thetas))), 
                     (step_size*1, 0), 
                     (step_size*np.cos(np.radians(-thetas)), step_size*np.sin(np.radians(-thetas))), 
-                    (step_size*np.cos(np.radians(-2*thetas)), step_size*np.sin(np.radians(-2*thetas)))]
-            costs = [step_size, step_size, step_size, step_size, step_size, step_size]            
+                    (step_size*np.cos(np.radians(-2*thetas)), step_size*np.sin(np.radians(-2*thetas))), (step_size*np.cos(np.radians(-3*thetas)), step_size*np.sin(np.radians(-3*thetas))), (step_size*np.cos(np.radians(-4*thetas)), step_size*np.sin(np.radians(-4*thetas))), (step_size*np.cos(np.radians(-5*thetas)), step_size*np.sin(np.radians(-5*thetas)))]
+            costs = [step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size]            
             for move, c2c_step in zip(moves, costs):
                 neighbor_x = node[1][0] + int(move[0])
                 neighbor_y = node[1][1] + int(move[1])
@@ -278,9 +281,7 @@ if __name__ == "__main__":
     ax.plot(x_initial, y_initial, 'bo', label='Initial Point')
     ax.plot(x_goal, y_goal, 'go', label='Goal Point')
 
-    # Plot the path nodes
-    for node in path:
-        ax.plot(node[0], node[1], 'ro', alpha=0.3, markersize=1)
+
 
     plt.pause(0.001)
     # display the plot

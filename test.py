@@ -1,7 +1,39 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Mar 11 15:49:50 2024
+
+@author: Sachin
+"""
+
+'''
+Importing the required libraries
+'''
+import heapq as hq
+import time
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import numpy as np
-# moves, costs = [(np.cos(np.radians(60)), np.sin(np.radians(60))), (np.cos(np.radians(30)), np.sin(np.radians(30))), (1, 0), (np.cos(np.radians(-30)), np.sin(np.radians(-30))), (np.cos(np.radians(-60)), np.sin(np.radians(-60)))], [1, 1, 1, 1, 1, 1]
-# for index, (move, c2c_step) in enumerate(zip(moves, costs)):
-#     print(index, move, c2c_step)
+
+'''
+Defining the Environment
+'''
+# create a figure and axis object
+fig, ax = plt.subplots(figsize=(6,2.5))
+
+# create a Rectangle object
+rect = patches.Rectangle((100, 100), 75, 400, linewidth=1, edgecolor='r', facecolor='none')
+rect1 = patches.Rectangle((275, 0), 75, 400, linewidth=1, edgecolor='r', facecolor='none')
+
+# Create a hexagon for another obstacle
+center_hexagon = (650, 250)
+num_vertices_hexagon = 6
+hexagon = patches.RegularPolygon(center_hexagon, num_vertices_hexagon, radius=150, orientation=0, linewidth=1, edgecolor='g', facecolor='none')
+
+# Polygon patch for the right half of the square
+vertices_right_half_square = [(900, 50), (1100, 50), (1100, 450), (900, 450), (900, 375), (1020, 375), (1020, 125), (900, 125)]
+
+right_half_square = patches.Polygon(vertices_right_half_square, linewidth=1, edgecolor='orange', facecolor='none')
+
 
 '''
 Checking for Obstacles
@@ -51,7 +83,10 @@ def obstacle_space(x, y):
         return True
     else:
         return False
-    
+
+'''
+Ask the user for the initial and goal points
+'''
 def give_inputs():
     x_initial = int(input("Provide the initial x coordinate: "))
     y_initial = int(input("Provide the initial y coordinate: "))
@@ -68,4 +103,192 @@ def give_inputs():
     else:
         return x_initial, y_initial, thetas, x_goal, y_goal
     
-x_initial, y_initial, thetas, x_goal, y_goal = give_inputs()
+
+
+def check_open_list(node, pq):
+    for open_node in open_list:
+        if node[1][0] == open_node[1][0] and  node[1][1] == open_node[1][1]:
+            return True
+    return False
+
+
+'''
+When the goal is found, we look for the path
+'''
+def get_path(predecessor, start, goal):
+    path = []
+    while goal != start:
+        # print("Goal before entering get_path:", goal)
+        path.append(goal)
+        goal = predecessor[goal]
+    path.append(start)
+    path.reverse()
+    # Plot the path nodes
+    for node in path:
+        ax.plot(node[0], node[1], 'ro', alpha=0.3, markersize=1)
+    print(path)
+    return path
+
+def custom_round(number):
+    return round(number * 2) / 2
+    
+if __name__ == "__main__":
+
+    '''
+    Set the time to 0
+    '''
+    start_time = time.time()
+    '''
+    Plotting the Environment
+    '''
+    # Add the patch to the Axes
+    ax.add_patch(hexagon)
+    ax.add_patch(rect)
+    ax.add_patch(rect1)
+    ax.add_patch(right_half_square)
+
+    '''
+    Specify the initial and goal points here
+    '''
+    # x_initial, y_initial, thetas, x_goal, y_goal = give_inputs()
+    x_initial = 5
+    y_initial = 5
+    thetas = 30
+    x_goal = 1190
+    y_goal = 494
+    # x_goal = 180
+    # y_goal = 150
+    step_size = 1
+
+    '''
+    Defining the Djikstra Algorithm
+    '''
+    open_list = []
+    hq.heapify(open_list)
+    c2c = 0
+    start = (c2c, (x_initial, y_initial))
+    goal = (c2c, (x_goal, y_goal))
+
+    # Add a circle around the goal point
+    circle_radius = 1.5
+    goal_circle = patches.Circle((x_goal, y_goal), circle_radius, edgecolor='b', facecolor='none', linestyle='--')
+    ax.add_patch(goal_circle)
+
+    # Set axis labels and limits
+    ax.set_xlabel('X-axis $(m)$')
+    ax.set_ylabel('Y-axis $(m)$')
+
+    ax.set_xlim(0, 1200)
+    ax.set_ylim(0, 500)
+
+    # Plot the initial and goal points
+    ax.plot(x_initial, y_initial, 'bo', label='Initial Point')
+    ax.plot(x_goal, y_goal, 'ro', label='Goal Point')
+
+    '''
+    Initializing the data structures
+    '''
+    predecessor = {(start[1][0], start[1][1]): None}
+    visited_nodes = [(start[1][0], start[1][1])]
+
+    # Add the start node to the open list
+    hq.heappush(open_list, start)
+    # print(open_list)
+    # iteration = 0
+
+    c2c_list = {start[1]: 0}
+    c2g = np.sqrt((start[1][0] - x_goal)**2 + (start[1][1] - y_goal)**2)
+
+    # while the open list is not empty
+    while not len(open_list)==0 :
+        # Pop the node with the smallest cost from the open list
+        node = hq.heappop(open_list)
+        print(node)
+        # Distance from the current node to the goal node
+        distance_from_goal = np.sqrt((node[1][0] - x_goal)**2 + (node[1][1] - y_goal)**2)
+
+        # Check if the node is the goal node, if yes then break the loop and find the path
+        if distance_from_goal <= circle_radius:
+            predecessor[(goal[1][0], goal[1][1])] = (node[1][0], node[1][1])
+            path = get_path(predecessor, start[1], goal[1])
+            break
+        else:
+            # Iteration to display the visited nodes after every 10000 iterations
+            # iteration += 1
+            # Sets the cost to move from one node to another
+            moves = [(step_size*np.cos(np.radians(6*thetas)), step_size*np.sin(np.radians(6*thetas))), (step_size*np.cos(np.radians(5*thetas)), step_size*np.sin(np.radians(5*thetas))),(step_size*np.cos(np.radians(4*thetas)), step_size*np.sin(np.radians(4*thetas))), (step_size*np.cos(np.radians(3*thetas)), step_size*np.sin(np.radians(3*thetas))), (step_size*np.cos(np.radians(2*thetas)), step_size*np.sin(np.radians(2*thetas))), 
+                    (step_size*np.cos(np.radians(thetas)), step_size*np.sin(np.radians(thetas))), 
+                    (step_size*1, 0), 
+                    (step_size*np.cos(np.radians(-thetas)), step_size*np.sin(np.radians(-thetas))), 
+                    (step_size*np.cos(np.radians(-2*thetas)), step_size*np.sin(np.radians(-2*thetas))), (step_size*np.cos(np.radians(-3*thetas)), step_size*np.sin(np.radians(-3*thetas))), (step_size*np.cos(np.radians(-4*thetas)), step_size*np.sin(np.radians(-4*thetas))), (step_size*np.cos(np.radians(-5*thetas)), step_size*np.sin(np.radians(-5*thetas)))]
+            costs = [step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size, step_size]            
+            for move, c2c_step in zip(moves, costs):
+                neighbor_x = node[1][0] + round(move[0])
+                neighbor_y = node[1][1] + round(move[1])
+
+                # distance from the current node to the goal node
+                c2g = np.sqrt((neighbor_x - x_goal)**2 + (neighbor_y - y_goal)**2)
+                
+                # adding the new node with its costs to be updated
+                new_node = (c2c_step, (neighbor_x, neighbor_y))
+
+                # Check if the node is in closed list and if it is in the obstacle space and open list
+                if not new_node[1] in c2c_list and not obstacle_space(neighbor_x, neighbor_y):
+                        # if not in closed list, add the node to the closed list
+                        predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
+                        
+                        # update the cost from start to the current node
+                        c2c = node[0] + step_size
+                        c2c_list[(neighbor_x, neighbor_y)] = c2c
+                        f_value = c2c + c2g
+
+                        # update the node with the new cost
+                        new_node = (f_value, (neighbor_x, neighbor_y))
+
+                        # Push the new node to the open list
+                        hq.heappush(open_list, new_node)
+                        # print("The new node is: ", new_node.node)
+
+                        # Add the visited node to the list
+                        visited_nodes.append((neighbor_x, neighbor_y))
+
+                        # Plotting the visited nodes
+                        # if iteration % 3000 == 0:  # Plot every 100th node
+                            # visited_x = [node[0] for node in visited_nodes]
+   
+                else:
+                    # If the node is in the open list, check if the cost to move from the current node to the neighbor node is less than the cost to move from the start node to the neighbor node
+                    if not obstacle_space(neighbor_x, neighbor_y):
+                        # Check if the sample array is present in the list of tuples
+                        for i in range(len(open_list)):
+                            if new_node[1][0] == open_list[i][1][0] and  new_node[1][1] == open_list[i][1][1] and open_list[i][0] > node[0] + step_size + c2g:
+                                    print("came here")
+                                    predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
+                                    c2c_list[(neighbor_x, neighbor_y)] = node[0] + step_size
+                                    open_list[i][0] = node[0] + step_size + c2g
+                                        
+    # Record the end time
+    end_time = time.time()
+
+    # Print the time taken to find the path
+    print("Time taken to find the path:", (end_time - start_time)/60, "minutes")
+
+    iteration = 0
+    for i in range(len(visited_nodes)):
+        if iteration % 1000 == 0:
+            ax.plot(visited_nodes[i][0], visited_nodes[i][1], 'go', alpha=0.3, markersize=1)
+            plt.pause(0.05)
+            iteration += 1
+
+    # set the x and y limits of the axis
+    ax.set_xlim(0, 1200)
+    ax.set_ylim(0, 500)
+
+    # Plot the initial and goal points
+    ax.plot(x_initial, y_initial, 'bo', label='Initial Point')
+    ax.plot(x_goal, y_goal, 'ro', label='Goal Point')
+
+    plt.pause(0.001)
+    # display the plot
+    plt.show()
+
