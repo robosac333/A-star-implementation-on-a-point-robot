@@ -256,16 +256,14 @@ if __name__ == "__main__":
                             ax.plot(visited_x, visited_y, 'go', alpha=0.3, markersize=0.2)
                             plt.pause(0.01)
 
-
-                        
-                # else:
-                #     # If the node is in the open list, check if the cost to move from the current node to the neighbor node is less than the cost to move from the start node to the neighbor node
-                #     if not obstacle_space(neighbor_x, neighbor_y):
-                #         # Check if the sample array is present in the list of tuples
-                #         for i in range(len(open_list)):
-                #             if new_node[1][0] == open_list[i][1][0] and  new_node[1][1] == open_list[i][1][1] and open_list[i][0] > node[0] + c2c_step + distance:
-                #                     predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
-                #                     c2c = node[0] + c2c_step + distance
+                else:
+                    # If the node is in the open list, check if the cost to move from the current node to the neighbor node is less than the cost to move from the start node to the neighbor node
+                    if not obstacle_space(neighbor_x, neighbor_y):
+                        # Check if the sample array is present in the list of tuples
+                        for i in range(len(open_list)):
+                            if new_node[1][0] == open_list[i][1][0] and  new_node[1][1] == open_list[i][1][1] and open_list[i][0] > node[0] + c2c_step + c2g:
+                                    predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
+                                    c2c = node[0] + c2c_step + c2g
                                         
     # Record the end time
     end_time = time.time()
