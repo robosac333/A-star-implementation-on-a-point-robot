@@ -173,8 +173,10 @@ def is_move_legal(tup , img_check, total_clearence):
         return True
 
 def algorithm(start , goal, step_size, image, total_clearence) :
+    #Please note that in the line that follows you will need to change the video driver to an 
+    #appropriate one that is available on your system.
     fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-    ##Please change the path here
+    ##Please change the path to the desired path.
     out = cv2.VideoWriter(r'C:\Users\sachi\Downloads\test2.mp4', fourcc, 20, (1200, 500))
     
     x_start , y_start , theta_start = start
