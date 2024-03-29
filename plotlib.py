@@ -21,13 +21,13 @@ cle = 5
 total_clearence = cle + radius
 
 # Coordinates of the first polygon
-x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 - cle , 1000 + cle , 1750 - cle , 2000 + cle
+x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 - cle , 1000 + cle , 1750 - cle , 2000
 
 # Coordinates of the second polygon
 x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 - cle , 0 + cle , 2750 , 1000 + cle
 
 # Create a blank image with size 1190x490
-img_check = np.zeros((6000, 2000 , 3), dtype=np.uint8)
+img_check = np.zeros((2000, 6000 , 3), dtype=np.uint8)
 
 # Define the vertices of the first polygon
 pts_polygon1 = np.array([[x1_polygon1, y1_polygon1], [x2_polygon1, y1_polygon1], [x2_polygon1, y2_polygon1], [x1_polygon1, y2_polygon1]], np.int32)
@@ -46,7 +46,7 @@ cv2.fillPoly(img_check, [pts_polygon2], (255 , 255 , 255))
 
 # Draw a circle centered at (4200, 1200) with radius 600
 circle_center = (4200, 1200)
-circle_radius = 600
+circle_radius = 600 + cle
 cv2.circle(img_check, circle_center, circle_radius, (255, 255, 255), -1)
 
 '''
@@ -59,9 +59,8 @@ x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 , 1000 , 1750 , 2000
 # Coordinates of the second polygon
 x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 , 0 , 2750 , 1000
 
-
 # Create a blank image with size 1190x490
-img_ori = np.zeros((6000, 2000 ,3), dtype=np.uint8)
+img_ori = np.zeros((2000, 6000 ,3), dtype=np.uint8)
 
 # Define the vertices of the first polygon
 pts_polygon1 = np.array([[x1_polygon1, y1_polygon1], [x2_polygon1, y1_polygon1], [x2_polygon1, y2_polygon1], [x1_polygon1, y2_polygon1]], np.int32)
@@ -72,15 +71,15 @@ pts_polygon2 = np.array([[x1_polygon2, y1_polygon2], [x2_polygon2, y1_polygon2],
 pts_polygon2 = pts_polygon2.reshape((-1, 1, 2))
 
 # Fill the first polygon with white color
-cv2.fillPoly(img_check, [pts_polygon1], (255 , 255 , 255))
+cv2.fillPoly(img_ori, [pts_polygon1], (255 , 0 , 0))
 
 # Fill the second polygon with white color
-cv2.fillPoly(img_check, [pts_polygon2], (255 , 255 , 255))
+cv2.fillPoly(img_ori, [pts_polygon2], (255 , 0 , 0))
 
 # Draw a circle centered at (4200, 1200) with radius 600
 circle_center = (4200, 1200)
 circle_radius = 600
-cv2.circle(img_check, circle_center, circle_radius, (255 , 255 , 255), -1)
+cv2.circle(img_check, circle_center, circle_radius, (255 , 0, 0), -1)
 
 # def possible_moves(tup , step_size):
 #     x_old, y_old, theta_old = tup
@@ -114,9 +113,9 @@ def possible_moves(tup , step_size, RPM1, RPM2):
         t = 0
         r = 0.038
         L = 0.354
-        dt = 0.1
-        Xn=Xi
-        Yn=Yi
+        dt = 10
+        # Xn=Xi
+        # Yn=Yi
         Thetan = 3.14 * Thetai / 180
 
     # Xi, Yi,Thetai: Input point's coordinates
@@ -124,21 +123,20 @@ def possible_moves(tup , step_size, RPM1, RPM2):
     # Xn, Yn, Thetan: End point coordintes
 
         D=0
-        while t<1:
-            t = t + dt
-            Xs = Xn
-            Ys = Yn
-            Xn += 0.5*r * (UL + UR) * math.cos(Thetan) * dt
-            Yn += 0.5*r * (UL + UR) * math.sin(Thetan) * dt
-            Thetan += (r / L) * (UR - UL) * dt
-            Thetan = 180 * (Thetan) / 3.14
-            if (Thetan == 0):
-                Thetan = 0
-            elif (Thetan == 360):
-                Thetan = 360
-            else :
-                Thetan = Thetan % 360
-            # plt.plot([Xs, Xn], [Ys, Yn], color="blue")
+        t = t + dt
+        # Xs = Xn
+        # Ys = Yn
+        Xn = Xi + 0.5*r * (UL + UR) * math.cos(Thetan) * dt
+        Yn = Yi +  0.5*r * (UL + UR) * math.sin(Thetan) * dt
+        Thetan = (r / L) * (UR - UL) * dt
+        Thetan = 180 * (Thetan) / 3.14
+        if (Thetan == 0):
+            Thetan = 0
+        elif (Thetan == 360):
+            Thetan = 360
+        else :
+            Thetan = Thetan % 360
+        # plt.plot([Xs, Xn], [Ys, Yn], color="blue")
 
             
         moves.append((Xn,Yn, Thetan))
@@ -163,7 +161,7 @@ def is_move_legal(tup , img_check, total_clearence):
 #     pixel_value = tuple(pixel_value)
     if x < total_clearence  or x >= (6000 - total_clearence) or y < total_clearence or y >= (2000 - total_clearence):
         return False
-    elif tuple(img_check[int(round(x)), int(round(y))]) == (255 , 255 , 255) :
+    elif tuple(img_check[int(round(y)), int(round(x))]) == (255 , 255 , 255) :
         #print(f"Point {point} is in the free region.(here 6)")
         return False
     else :
@@ -367,10 +365,10 @@ start_y = 1000
 start_theta = 0
 # goal_x = 4000
 # goal_y = 1780
-goal_x = 5000
-goal_y = 10
-RPM1 = 50
-RPM2 = 100
+goal_x = 2000
+goal_y = 500
+RPM1 = 500
+RPM2 = 1000
 goal_theta = start_theta
 
 start = (start_x , start_y, start_theta)
