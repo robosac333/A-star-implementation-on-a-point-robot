@@ -79,7 +79,7 @@ cv2.fillPoly(img_ori, [pts_polygon2], (255 , 0 , 0))
 # Draw a circle centered at (4200, 1200) with radius 600
 circle_center = (4200, 1200)
 circle_radius = 600
-cv2.circle(img_check, circle_center, circle_radius, (255 , 0, 0), -1)
+cv2.circle(img_ori, circle_center, circle_radius, (255 , 0, 0), -1)
 
 # def possible_moves(tup , step_size):
 #     x_old, y_old, theta_old = tup
@@ -361,12 +361,12 @@ circle_center = (4200, 1200)
 # goal_theta = int(input("Enter the goal orientation: "))
 
 start_x = 500
-start_y = 1000
+start_y = 1750
 start_theta = 0
 # goal_x = 4000
 # goal_y = 1780
-goal_x = 2000
-goal_y = 500
+goal_x = 5750
+goal_y = 1000
 RPM1 = 500
 RPM2 = 1000
 goal_theta = start_theta
