@@ -21,9 +21,12 @@ def draw_hexagon(side_length, centroid):
 '''
 First Plotting the Bloated Figure
 '''
-step_size = float((input("Enter the step size: ")))
-radius = int(input("Enter the radius of the robot: "))
-cle = int(input("Enter the clearence: "))
+# step_size = float((input("Enter the step size: ")))
+# radius = int(input("Enter the radius of the robot: "))
+# cle = int(input("Enter the clearence: "))
+step_size = 1
+radius = 5
+cle = 5
 total_clearence = cle + radius
 
 pts_hexagon = draw_hexagon(150 + cle , (650 , 250))
@@ -130,24 +133,69 @@ cv2.fillPoly(img_check, [pts_polygon5], (255 , 0 , 0))
 cv2.fillPoly(img_check, [pts_hexagon], (255 , 0 , 0))
 
 
-def possible_moves(tup , step_size):
-    x_old, y_old, theta_old = tup
-    move_list = []
-    angles = [0, 30, 60, -30, -60]
+# def possible_moves(tup , step_size):
+#     x_old, y_old, theta_old = tup
+#     move_list = []
+#     angles = [0, 30, 60, -30, -60]
 
-    for angle in angles:
-        theta = (theta_old + angle)
-        if (theta == 0):
-            theta = 0
-        elif (theta == 360):
-            theta = 360
-        else :
-            theta = theta % 360
-        x = x_old + step_size * math.cos(np.radians(theta))
-        y = y_old + step_size * math.sin(np.radians(theta))  # Use sin for y-coordinate
-        move_list.append((x, y, theta))
+#     for angle in angles:
+#         theta = (theta_old + angle)
+#         if (theta == 0):
+#             theta = 0
+#         elif (theta == 360):
+#             theta = 360
+#         else :
+#             theta = theta % 360
+#         x = x_old + step_size * math.cos(np.radians(theta))
+#         y = y_old + step_size * math.sin(np.radians(theta))  # Use sin for y-coordinate
+#         move_list.append((x, y, theta))
 
-    return move_list
+#     return move_list
+
+def possible_moves(tup , step_size, RPM1, RPM2):
+    Xi, Yi, Thetai = tup
+    RPM1 = 50
+    RPM2 = 100
+    move_list = [(0, RPM1), (RPM1, 0), (RPM1, RPM1), (0, RPM2), (RPM2, 0), (RPM2, RPM2), (RPM1, RPM2), (RPM2, RPM1)]
+
+    moves = []
+    
+    for move in move_list:
+        UL,UR= move
+        t = 0
+        r = 0.038
+        L = 0.354
+        dt = 0.1
+        Xn=Xi
+        Yn=Yi
+        Thetan = 3.14 * Thetai / 180
+
+    # Xi, Yi,Thetai: Input point's coordinates
+    # Xs, Ys: Start point coordinates for plot function
+    # Xn, Yn, Thetan: End point coordintes
+
+        D=0
+        while t<1:
+            t = t + dt
+            Xs = Xn
+            Ys = Yn
+            Xn += 0.5*r * (UL + UR) * math.cos(Thetan) * dt
+            Yn += 0.5*r * (UL + UR) * math.sin(Thetan) * dt
+            Thetan += (r / L) * (UR - UL) * dt
+            Thetan = 180 * (Thetan) / 3.14
+            if (Thetan == 0):
+                Thetan = 0
+            elif (Thetan == 360):
+                Thetan = 360
+            else :
+                Thetan = Thetan % 360
+            # plt.plot([Xs, Xn], [Ys, Yn], color="blue")
+
+            
+        moves.append((Xn,Yn, Thetan))
+
+
+    return moves
 
 def is_in_check(tup , visited):
     x , y , theta = tup
@@ -242,7 +290,8 @@ def algorithm(start , goal, step_size, image, total_clearence) :
                 out.write(flipped_vertical)
             reached = 1
             break
-        moves = possible_moves((x_int , y_int , theta) , step_size)
+
+        moves = possible_moves((x_int , y_int , theta) , step_size, RPM1, RPM2)
         for move in (moves) :
             x , y, theta = move
             x_int = int(round(x))
@@ -356,16 +405,27 @@ obstacles = [
     [(900, 450), (1100, 450), (1100, 50), (900, 50), (900, 125), (1020, 125), (1020, 375), (900, 375)]
 ]
 
-start_x = float(input("Enter the start x position: "))
-start_x = int(round(start_x))
-start_y = float(input("Enter the start y position: "))
-start_y = int(round(start_y))
-start_theta = int(input("Enter the start orientation: "))
-goal_x = float(input("Enter the goal x position: "))
-goal_x = int(round(goal_x))
-goal_y = float(input("Enter the goal y position: "))
-goal_y = int(round(goal_y))
-goal_theta = int(input("Enter the goal orientation: "))
+# start_x = float(input("Enter the start x position: "))
+# start_x = int(round(start_x))
+# start_y = float(input("Enter the start y position: "))
+# start_y = int(round(start_y))
+# start_theta = int(input("Enter the start orientation: "))
+# goal_x = float(input("Enter the goal x position: "))
+# goal_x = int(round(goal_x))
+# goal_y = float(input("Enter the goal y position: "))
+# goal_y = int(round(goal_y))
+# goal_theta = int(input("Enter the goal orientation: "))
+
+start_x = 60
+start_y = 200
+start_theta = 30
+goal_x = 200
+goal_y = 200
+# goal_x = 60
+# goal_y = 200
+RPM1 = 400
+RPM2 = 800
+goal_theta = start_theta
 
 start = (start_x , start_y, start_theta)
 goal = (goal_x , goal_y, goal_theta)
