@@ -47,7 +47,7 @@ cv2.fillPoly(img_check, [pts_polygon2], (255 , 255 , 255))
 # Draw a circle centered at (4200, 1200) with radius 600
 circle_center = (4200, 1200)
 circle_radius = 600
-cv2.circle(img_check, circle_center, circle_radius, (255, 0, 0), -1)
+cv2.circle(img_check, circle_center, circle_radius, (255, 255, 255), -1)
 
 '''
 Now Plotting the Maze on top of the bloated figure
@@ -72,15 +72,15 @@ pts_polygon2 = np.array([[x1_polygon2, y1_polygon2], [x2_polygon2, y1_polygon2],
 pts_polygon2 = pts_polygon2.reshape((-1, 1, 2))
 
 # Fill the first polygon with white color
-cv2.fillPoly(img_check, [pts_polygon1], (255 , 0 , 0))
+cv2.fillPoly(img_check, [pts_polygon1], (255 , 255 , 255))
 
 # Fill the second polygon with white color
-cv2.fillPoly(img_check, [pts_polygon2], (255 , 0 , 0))
+cv2.fillPoly(img_check, [pts_polygon2], (255 , 255 , 255))
 
 # Draw a circle centered at (4200, 1200) with radius 600
 circle_center = (4200, 1200)
 circle_radius = 600
-cv2.circle(img_check, circle_center, circle_radius, (255, 0, 0), -1)
+cv2.circle(img_check, circle_center, circle_radius, (255 , 255 , 255), -1)
 
 # def possible_moves(tup , step_size):
 #     x_old, y_old, theta_old = tup
@@ -367,8 +367,8 @@ start_y = 1000
 start_theta = 0
 # goal_x = 4000
 # goal_y = 1780
-goal_x = 1510
-goal_y = 1500
+goal_x = 5000
+goal_y = 10
 RPM1 = 50
 RPM2 = 100
 goal_theta = start_theta
