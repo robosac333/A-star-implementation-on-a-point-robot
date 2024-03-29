@@ -9,15 +9,6 @@ import heapq
 import math
 from matplotlib.animation import FuncAnimation
 
-def draw_hexagon(side_length, centroid):
-    angle = 60  
-    angles_rad = np.radians([(60 * i + 90) for i in range(6)]) 
-    x = centroid[0] + side_length * np.cos(angles_rad)
-    y = centroid[1] + side_length * np.sin(angles_rad)
-    points = np.array([[int(x[i]), int(y[i])] for i in range(6)], np.int32)
-    points = points.reshape((-1, 1, 2))
-    return points
-
 '''
 First Plotting the Bloated Figure
 '''
@@ -29,31 +20,14 @@ radius = 5
 cle = 5
 total_clearence = cle + radius
 
-pts_hexagon = draw_hexagon(150 + cle , (650 , 250))
-
 # Coordinates of the first polygon
-x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 99 - cle , 174 + cle , 99 - cle , 499
+x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 - cle , 1000 + cle , 1750 - cle , 2000 + cle
 
 # Coordinates of the second polygon
-x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 274 - cle , 349 + cle , 0 , 399 + cle
+x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 - cle , 0 + cle , 2750 , 1000 + cle
 
-x1_polygon3, x2_polygon3, y1_polygon3, y2_polygon3 = 899 - cle , 1099 + cle , 49 - cle , 124 + cle
-
-x1_polygon4, x2_polygon4, y1_polygon4 , y2_polygon4 = 1019 - cle , 1099 + cle , 124 - cle , 374 + cle
-
-x1_polygon5, x2_polygon5, y1_polygon5 , y2_polygon5 = 899 - cle , 1099 + cle , 374 - cle , 449 + cle
-
-
-pts_polygon3 = np.array([[x1_polygon3, y1_polygon3], [x2_polygon3, y1_polygon3], [x2_polygon3, y2_polygon3], [x1_polygon3, y2_polygon3]], np.int32)
-pts_polygon3 = pts_polygon3.reshape((-1, 1, 2))
-
-pts_polygon4 = np.array([[x1_polygon4, y1_polygon4], [x2_polygon4, y1_polygon4], [x2_polygon4, y2_polygon4], [x1_polygon4, y2_polygon4]], np.int32)
-pts_polygon4 = pts_polygon4.reshape((-1, 1, 2))
-
-pts_polygon5 = np.array([[x1_polygon5, y1_polygon5], [x2_polygon5, y1_polygon5], [x2_polygon5, y2_polygon5], [x1_polygon5, y2_polygon5]], np.int32)
-pts_polygon5 = pts_polygon5.reshape((-1, 1, 2))
 # Create a blank image with size 1190x490
-img_check = np.zeros((500, 1200 , 3), dtype=np.uint8)
+img_check = np.zeros((6000, 2000 , 3), dtype=np.uint8)
 
 # Define the vertices of the first polygon
 pts_polygon1 = np.array([[x1_polygon1, y1_polygon1], [x2_polygon1, y1_polygon1], [x2_polygon1, y2_polygon1], [x1_polygon1, y2_polygon1]], np.int32)
@@ -70,44 +44,24 @@ cv2.fillPoly(img_check, [pts_polygon1], (255 , 255 , 255))
 # Fill the second polygon with white color
 cv2.fillPoly(img_check, [pts_polygon2], (255 , 255 , 255))
 
-
-cv2.fillPoly(img_check, [pts_polygon3], (255 , 255 , 255))
-
-cv2.fillPoly(img_check, [pts_polygon4], (255 , 255 , 255))
-
-cv2.fillPoly(img_check, [pts_polygon5], (255 , 255 , 255))
-
-cv2.fillPoly(img_check, [pts_hexagon], (255 , 255 , 255))
+# Draw a circle centered at (4200, 1200) with radius 600
+circle_center = (4200, 1200)
+circle_radius = 600
+cv2.circle(img_check, circle_center, circle_radius, (255, 0, 0), -1)
 
 '''
 Now Plotting the Maze on top of the bloated figure
 '''
-pts_hexagon = draw_hexagon(150 , (650 , 250))
-
 
 # Coordinates of the first polygon
-x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 99 , 174 , 99 , 499
+x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 , 1000 , 1750 , 2000
 
 # Coordinates of the second polygon
-x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 274 , 349 , 0 , 399
-
-x1_polygon3, x2_polygon3, y1_polygon3, y2_polygon3 = 899 , 1099 , 49 , 124
-
-x1_polygon4, x2_polygon4, y1_polygon4 , y2_polygon4 = 1019 , 1099 , 124 , 374
-
-x1_polygon5, x2_polygon5, y1_polygon5 , y2_polygon5 = 899 , 1099 , 374 , 449
+x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 , 0 , 2750 , 1000
 
 
-pts_polygon3 = np.array([[x1_polygon3, y1_polygon3], [x2_polygon3, y1_polygon3], [x2_polygon3, y2_polygon3], [x1_polygon3, y2_polygon3]], np.int32)
-pts_polygon3 = pts_polygon3.reshape((-1, 1, 2))
-
-pts_polygon4 = np.array([[x1_polygon4, y1_polygon4], [x2_polygon4, y1_polygon4], [x2_polygon4, y2_polygon4], [x1_polygon4, y2_polygon4]], np.int32)
-pts_polygon4 = pts_polygon4.reshape((-1, 1, 2))
-
-pts_polygon5 = np.array([[x1_polygon5, y1_polygon5], [x2_polygon5, y1_polygon5], [x2_polygon5, y2_polygon5], [x1_polygon5, y2_polygon5]], np.int32)
-pts_polygon5 = pts_polygon5.reshape((-1, 1, 2))
 # Create a blank image with size 1190x490
-img_ori = np.zeros((500, 1200 ,3), dtype=np.uint8)
+img_ori = np.zeros((6000, 2000 ,3), dtype=np.uint8)
 
 # Define the vertices of the first polygon
 pts_polygon1 = np.array([[x1_polygon1, y1_polygon1], [x2_polygon1, y1_polygon1], [x2_polygon1, y2_polygon1], [x1_polygon1, y2_polygon1]], np.int32)
@@ -123,15 +77,10 @@ cv2.fillPoly(img_check, [pts_polygon1], (255 , 0 , 0))
 # Fill the second polygon with white color
 cv2.fillPoly(img_check, [pts_polygon2], (255 , 0 , 0))
 
-
-cv2.fillPoly(img_check, [pts_polygon3], (255 , 0 , 0))
-
-cv2.fillPoly(img_check, [pts_polygon4], (255 , 0 , 0))
-
-cv2.fillPoly(img_check, [pts_polygon5], (255 , 0 , 0))
-
-cv2.fillPoly(img_check, [pts_hexagon], (255 , 0 , 0))
-
+# Draw a circle centered at (4200, 1200) with radius 600
+circle_center = (4200, 1200)
+circle_radius = 600
+cv2.circle(img_check, circle_center, circle_radius, (255, 0, 0), -1)
 
 # def possible_moves(tup , step_size):
 #     x_old, y_old, theta_old = tup
@@ -212,9 +161,9 @@ def is_move_legal(tup , img_check, total_clearence):
     x , y = tup
     #pixel_value = img_check[y, x]
 #     pixel_value = tuple(pixel_value)
-    if x < total_clearence  or x > 1199 - total_clearence or y < total_clearence or y > 499 - total_clearence:
+    if x < total_clearence  or x >= (6000 - total_clearence) or y < total_clearence or y >= (2000 - total_clearence):
         return False
-    elif tuple(img_check[int(round(y)), int(round(x))]) == (255 , 255 , 255) :
+    elif tuple(img_check[int(round(x)), int(round(y))]) == (255 , 255 , 255) :
         #print(f"Point {point} is in the free region.(here 6)")
         return False
     else :
@@ -331,15 +280,19 @@ def algorithm(start , goal, step_size, image, total_clearence) :
 '''
 Function to plot all the Visited Nodes
 '''
-def animate_search(visited):
-    fig, ax = plt.subplots(figsize=(12, 5)) #set animate to 12:5 match map shape
-    ax.set_xlim(0, 1200) #set animate x axis
-    ax.set_ylim(0, 500) #set animate y axis
+def animate_search(visited, circle_center):
+    fig, ax = plt.subplots(figsize=(9, 3)) #set animate to 12:5 match map shape
+    ax.set_xlim(0, 6000) #set animate x axis
+    ax.set_ylim(0, 2000) #set animate y axis
 
     #show obstacles
     for polygons in obstacles:
         polygon = plt.Polygon(polygons, facecolor="red", edgecolor='black')
         ax.add_patch(polygon)
+
+    # Draw circle
+    circle = plt.Circle(circle_center, radius=600, color='red', alpha=0.5)  # Adjust radius as needed
+    ax.add_artist(circle)
 
     points = ax.scatter([], [], s=1, color='blue') 
 
@@ -357,18 +310,21 @@ def animate_search(visited):
     ani = FuncAnimation(fig, update, frames=len(visited), init_func=init, blit=True, interval=1)
     plt.show()
 
-
 '''
 Animate the path
 '''
-def animate_path(path):
-    fig, ax = plt.subplots(figsize=(12, 5))
-    ax.set_xlim(0, 1200)
-    ax.set_ylim(0, 500)
+def animate_path(path, circle_center):
+    fig, ax = plt.subplots(figsize=(9,3))
+    ax.set_xlim(0, 6000)
+    ax.set_ylim(0, 2000)
 
     for polygons in obstacles:
         polygon = plt.Polygon(polygons, facecolor="gray", edgecolor='black')
         ax.add_patch(polygon)
+
+    # Draw circle
+    circle = plt.Circle(circle_center, radius=600, color='black', alpha=0.5)  # Adjust radius as needed
+    ax.add_artist(circle)
 
     line, = ax.plot([], [], 'b-', lw=2)  # Path line
 
@@ -386,24 +342,14 @@ def animate_path(path):
     ani = FuncAnimation(fig, update, frames=len(path), init_func=init, blit=True, interval=50)
     plt.show()
 
-
-'''
-Obstacle coordinates
-'''
 obstacles = [
-    [(100, 100), (100, 500), (175, 500), (175, 100)],
+    [(1500, 1000), (1500, 2000), (1750, 2000), (1750, 1000)],
 
-    [(275, 0), (275, 400), (350, 400), (350, 0)],
-
-    [(650-150*np.cos(np.pi/6), 400-150-150*0.5),
-     (650-150*np.cos(np.pi/6), 400-150*0.5),
-     (650, 400),
-     (650+150*np.cos(np.pi/6), 400-150*0.5),
-     (650+150*np.cos(np.pi/6), 400-150-150*0.5),
-     (650, 100)],
-
-    [(900, 450), (1100, 450), (1100, 50), (900, 50), (900, 125), (1020, 125), (1020, 375), (900, 375)]
+    [(2500, 0), (2500, 1000), (2750, 1000), (2750, 0)]
 ]
+
+
+circle_center = (4200, 1200)
 
 # start_x = float(input("Enter the start x position: "))
 # start_x = int(round(start_x))
@@ -416,15 +362,15 @@ obstacles = [
 # goal_y = int(round(goal_y))
 # goal_theta = int(input("Enter the goal orientation: "))
 
-start_x = 60
-start_y = 200
-start_theta = 30
-goal_x = 200
-goal_y = 200
-# goal_x = 60
-# goal_y = 200
-RPM1 = 400
-RPM2 = 800
+start_x = 500
+start_y = 1000
+start_theta = 0
+# goal_x = 4000
+# goal_y = 1780
+goal_x = 1510
+goal_y = 1500
+RPM1 = 50
+RPM2 = 100
 goal_theta = start_theta
 
 start = (start_x , start_y, start_theta)
@@ -459,6 +405,8 @@ for point in path :
     x , y , theta = point
     coord_list.append((x , y))
 
-animate_search(move_list)
+circle_center = (4200, 1200)
 
-animate_path(coord_list)
+animate_search(move_list, circle_center)
+
+animate_path(coord_list, circle_center)
