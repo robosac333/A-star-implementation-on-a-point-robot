@@ -21,10 +21,10 @@ cle = 5
 total_clearence = cle + radius
 
 # Coordinates of the first polygon
-x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 - cle , 1000 + cle , 1750 - cle , 2000
+x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 - cle , 1750 + cle , 1000 - cle , 2000
 
 # Coordinates of the second polygon
-x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 - cle , 0 + cle , 2750 , 1000 + cle
+x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 - cle , 2750 + cle , 0 , 1000 + cle
 
 # Create a blank image with size 1190x490
 img_check = np.zeros((2000, 6000 , 3), dtype=np.uint8)
@@ -54,10 +54,10 @@ Now Plotting the Maze on top of the bloated figure
 '''
 
 # Coordinates of the first polygon
-x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 , 1000 , 1750 , 2000
-
+x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 , 1750 , 1000 , 2000
+1500, 
 # Coordinates of the second polygon
-x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 , 0 , 2750 , 1000
+x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500, 2750, 0, 1000
 
 # Create a blank image with size 1190x490
 img_ori = np.zeros((2000, 6000 ,3), dtype=np.uint8)
