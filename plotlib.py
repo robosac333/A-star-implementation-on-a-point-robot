@@ -128,7 +128,7 @@ def possible_moves(tup , step_size, RPM1, RPM2):
         # Ys = Yn
         Xn = Xi + 0.5*r * (UL + UR) * math.cos(Thetan) * dt
         Yn = Yi +  0.5*r * (UL + UR) * math.sin(Thetan) * dt
-        Thetan = (r / L) * (UR - UL) * dt
+        Thetan = Thetai + (r / L) * (UR - UL) * dt
         Thetan = 180 * (Thetan) / 3.14
         if (Thetan == 0):
             Thetan = 0
