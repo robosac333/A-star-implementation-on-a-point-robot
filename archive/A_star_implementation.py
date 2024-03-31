@@ -198,7 +198,7 @@ if __name__ == "__main__":
     # print(open_list)
     iteration = 0
 
-    c2c_list = {start[1]: 0}
+    c2c_list = {(start[1][0], start[1][1]): 0}
     c2g = np.sqrt((start[1][0] - x_goal)**2 + (start[1][1] - y_goal)**2)
 
     start = (c2g, (x_initial, y_initial, thetas))
@@ -259,29 +259,28 @@ if __name__ == "__main__":
                     Thetan = Thetan % 360
 
                 # Calculate the new node
-                neighbor_x =  round(Xn)
-                neighbor_y =  round(Yn)
-
+                neighbor_x = int(round(Xn))
+                neighbor_y = int(round(Xn))
                 # distance from the current node to the goal node
                 c2g = np.sqrt((neighbor_x - x_goal)**2 + (neighbor_y - y_goal)**2)
                 
                 # adding the new node with its costs to be updated
-                new_node = (c2c_step, (neighbor_x, neighbor_y, Thetan))
+                new_node = (c2c_step, (Xn, Yn, Thetan))
                 # print("The new node is: ", new_node)
 
                 # Check if the node is in closed list and if it is in the obstacle space and open list
                 # if new_node[1] not in c2c_list and (neighbor_x, neighbor_y) not in predecessor and not obstacle_space(neighbor_x, neighbor_y):
                 if not obstacle_space(neighbor_x, neighbor_y) and (neighbor_x, neighbor_y) not in visited_nodes:
                         # if not in closed list, add the node to the closed list
-                        predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
+                        predecessor[(neighbor_x, neighbor_y)] = (int(round(node[1][0])), int(round(node[1][1])))
                         
                         # update the cost from start to the current node
-                        c2c = node[0] + c2c_step
-                        c2c_list[(neighbor_x, neighbor_y, Thetan)] = c2c
+                        c2c = c2c_list[(int(round(node[1][0])), int(round(node[1][1])))] + c2c_step
+                        c2c_list[(neighbor_x, neighbor_y)] = c2c
                         f_value = c2c + c2g
 
                         # update the node with the new cost
-                        new_node = (f_value, (neighbor_x, neighbor_y, Thetan))
+                        new_node = (f_value, (Xn, Yn, Thetan))
 
                         # Push the new node to the open list
                         hq.heappush(open_list, new_node)
@@ -303,13 +302,13 @@ if __name__ == "__main__":
                         # Check if the sample array is present in the list of tuples
                         # for i in range(len(open_list)):
                         #     if new_node[1][0] == open_list[i][1][0] and  new_node[1][1] == open_list[i][1][1] and open_list[i][0] > node[0] + c2c_step + c2g:
-                        #             predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
+                        #             predecessor[(neighbor_x, neighbor_y)] = (int(round(node[1][0])), int(round(node[1][1])))
                         #             # distance from the current node to the goal node
                         #             c2g = np.sqrt((neighbor_x - x_goal)**2 + (neighbor_y - y_goal)**2)
-                        #             c2c = node[0] + c2c_step
-                        #             c2c_list[(neighbor_x, neighbor_y, Thetan)] = c2c
+                        #             c2c = c2c_list[(int(round(node[1][0])), int(round(node[1][1])))] + c2c_step
+                        #             c2c_list[(neighbor_x, neighbor_y)] = c2c
                         #             f_value = c2c + c2g
-                        #             new_node = (f_value, (neighbor_x, neighbor_y, Thetan))
+                        #             new_node = (f_value, (Xn, Yn, Thetan))
                         #             hq.heappush(open_list, new_node)
                         continue
                                         

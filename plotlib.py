@@ -16,15 +16,15 @@ First Plotting the Bloated Figure
 # radius = int(input("Enter the radius of the robot: "))
 # cle = int(input("Enter the clearence: "))
 step_size = 1
-radius = 5
-cle = 5
+radius = 220
+cle = 0
 total_clearence = cle + radius
 
 # Coordinates of the first polygon
-x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 - cle , 1750 + cle , 1000 - cle , 2000
+x1_polygon1, x2_polygon1, y1_polygon1, y2_polygon1 = 1500 - total_clearence , 1750 + total_clearence , 1000 - total_clearence , 2000
 
 # Coordinates of the second polygon
-x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 - cle , 2750 + cle , 0 , 1000 + cle
+x1_polygon2, x2_polygon2, y1_polygon2, y2_polygon2 = 2500 - total_clearence , 2750 + total_clearence , 0 , 1000 + total_clearence
 
 # Create a blank image with size 1190x490
 img_check = np.zeros((2000, 6000 , 3), dtype=np.uint8)
@@ -46,7 +46,7 @@ cv2.fillPoly(img_check, [pts_polygon2], (255 , 255 , 255))
 
 # Draw a circle centered at (4200, 1200) with radius 600
 circle_center = (4200, 1200)
-circle_radius = 600 + cle
+circle_radius = 600 + total_clearence
 cv2.circle(img_check, circle_center, circle_radius, (255, 255, 255), -1)
 
 '''
@@ -102,8 +102,8 @@ cv2.circle(img_ori, circle_center, circle_radius, (255 , 0, 0), -1)
 
 def possible_moves(tup , step_size, RPM1, RPM2):
     Xi, Yi, Thetai = tup
-    RPM1 = 50
-    RPM2 = 100
+    RPM1 = 20
+    RPM2 = 50
     move_list = [(0, RPM1), (RPM1, 0), (RPM1, RPM1), (0, RPM2), (RPM2, 0), (RPM2, RPM2), (RPM1, RPM2), (RPM2, RPM1)]
 
     moves = []
@@ -113,7 +113,7 @@ def possible_moves(tup , step_size, RPM1, RPM2):
         t = 0
         r = 0.038
         L = 0.354
-        dt = 10
+        dt = 20
         # Xn=Xi
         # Yn=Yi
         Thetan = 3.14 * Thetai / 180
@@ -214,7 +214,7 @@ def algorithm(start , goal, step_size, image, total_clearence) :
             thetas.append(theta)
             visited[x_int , y_int] = thetas
 #         visited_parent[node] = parent
-        if (math.sqrt((node[0] - goal[0])**2 + (node[1] - goal[1])**2) <= 1.5 and (abs(node[2] - goal[2]) <= 15 ))  :
+        if (math.sqrt((node[0] - goal[0])**2 + (node[1] - goal[1])**2) <= 1.5)  :
             #print(reached)
             path.append(node)
             
@@ -361,14 +361,14 @@ circle_center = (4200, 1200)
 # goal_theta = int(input("Enter the goal orientation: "))
 
 start_x = 500
-start_y = 1750
+start_y = 1000
 start_theta = 0
 # goal_x = 4000
 # goal_y = 1780
 goal_x = 5750
 goal_y = 1000
-RPM1 = 500
-RPM2 = 1000
+RPM1 = 50
+RPM2 = 100
 goal_theta = start_theta
 
 start = (start_x , start_y, start_theta)

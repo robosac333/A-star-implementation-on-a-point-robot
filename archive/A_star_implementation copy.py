@@ -276,7 +276,7 @@ if __name__ == "__main__":
     # print(open_list)
     iteration = 0
 
-    c2c_list = {start[1]: 0}
+    c2c_list = {(start[1][0], start[1][1]): 0}
     c2g = np.sqrt((start[1][0] - x_goal)**2 + (start[1][1] - y_goal)**2)
 
     start = (c2g, (x_initial, y_initial, thetas))
@@ -357,7 +357,7 @@ if __name__ == "__main__":
                 neighbor_y = int(round(Yn))
 
 
-                if is_in_check((neighbor_x, neighbor_y, Thetan), is_in_checker):      
+                if not is_in_check((neighbor_x, neighbor_y, Thetan), is_in_checker):      
                         # distance from the current node to the goal node
                         c2g = np.sqrt((neighbor_x - x_goal)**2 + (neighbor_y - y_goal)**2)
                         
@@ -372,8 +372,8 @@ if __name__ == "__main__":
                                 predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
                                 
                                 # update the cost from start to the current node
-                                c2c = node[0] + c2c_step
-                                c2c_list[(neighbor_x, neighbor_y, Thetan)] = c2c
+                                c2c = c2c_list[(x_int, y_int)] + c2c_step
+                                c2c_list[(neighbor_x, neighbor_y)] = c2c
                                 f_value = c2c + c2g
 
                                 # update the node with the new cost
@@ -395,19 +395,19 @@ if __name__ == "__main__":
 
                         else:
                             # If the node is in the open list, check if the cost to move from the current node to the neighbor node is less than the cost to move from the start node to the neighbor node
-                            if is_move_legal(neighbor_x, neighbor_y):
-                                # Check if the sample array is present in the list of tuples
-                                for i in range(len(open_list)):
-                                    if new_node[1][0] == open_list[i][1][0] and  new_node[1][1] == open_list[i][1][1] and open_list[i][0] > node[0] + c2c_step + c2g:
-                                            predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
-                                            # distance from the current node to the goal node
-                                            c2g = np.sqrt((neighbor_x - x_goal)**2 + (neighbor_y - y_goal)**2)
-                                            c2c = node[0] + c2c_step
-                                            c2c_list[(neighbor_x, neighbor_y, Thetan)] = c2c
-                                            f_value = c2c + c2g
-                                            new_node = (f_value, (Xn, Yn, Thetan))
-                                            hq.heappush(open_list, new_node)
-                                # continue
+                            # if is_move_legal(neighbor_x, neighbor_y):
+                            #     # Check if the sample array is present in the list of tuples
+                            #     for i in range(len(open_list)):
+                            #         if new_node[1][0] == open_list[i][1][0] and  new_node[1][1] == open_list[i][1][1] and open_list[i][0] > node[0] + c2c_step + c2g:
+                            #                 predecessor[(neighbor_x, neighbor_y)] = (node[1][0], node[1][1])
+                            #                 # distance from the current node to the goal node
+                            #                 c2g = np.sqrt((neighbor_x - x_goal)**2 + (neighbor_y - y_goal)**2)
+                            #                 c2c = c2c_list[(x_int, y_int)] + c2c_step
+                            #                 c2c_list[(neighbor_x, neighbor_y)] = c2c
+                            #                 f_value = c2c + c2g
+                            #                 new_node = (f_value, (Xn, Yn, Thetan))
+                            #                 hq.heappush(open_list, new_node)
+                                continue
                
     # Record the end time
     end_time = time.time()
